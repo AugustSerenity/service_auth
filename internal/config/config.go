@@ -22,9 +22,10 @@ type Server struct {
 
 type DB struct {
 	Host     string `yaml:"host" env-default:"localhost"`
-	Port     string `yaml:"port" env-default:"5433"`
+	Port     string `yaml:"port" env-default:"5432"`
 	Username string `yaml:"username" env-default:"postgres"`
 	Name     string `yaml:"name" env-default:"medods"`
+	Password string `yaml:"password" env-default:"postgres"`
 }
 
 func ParseConfig(path string) *Config {

@@ -10,7 +10,7 @@ import (
 
 func InitDB(cfg config.DB) *sql.DB {
 	var err error
-	connStr := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Name)
+	connStr := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Name, cfg.Password)
 
 	conn, err := sql.Open("postgres", connStr)
 	if err != nil {

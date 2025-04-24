@@ -31,7 +31,8 @@ func (s *Storage) SaveToken(ctx context.Context, refresh *model.RefreshToken) er
 
 	_, err := s.db.ExecContext(ctx, query, refresh.UserID, refresh.AccessJTI, refresh.HashedToken, refresh.IP)
 	if err != nil {
-		log.Printf("Ошибка при создании токена: %v", err)
+		//TODO
+		log.Printf("Error creating token: %v", err)
 		return err
 	}
 

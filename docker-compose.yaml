@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  postgres-service:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=medods
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./migration/create_token.up.sql:/docker-entrypoint-initdb.d/create_token.up.sql
+
+  app:
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-service
+    restart: on-failure
