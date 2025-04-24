@@ -23,7 +23,9 @@ git clone https://github.com/AugustSerenity/service_auth
 make run
 ```
 
-### Тестовый запрос для для создания пары Access, Refresh токенов
+### Тестовый запрос для создания пары Access, Refresh токенов
+
+Для выполнения запроса для получения токенов, используйте следующий `curl` запрос:
 
 ```bash
 curl -X POST "http://localhost:8080/auth-token?id=123e4567-e89b-12d3-a456-426614174000"
