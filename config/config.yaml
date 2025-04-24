@@ -1,0 +1,14 @@
+logger:
+  level: "local"
+server:
+  address: ":8080"
+  timeout: 4s
+  iddle_timeout: 60s
+  shutdown_timeout: 10s
+db:
+  host: "localhost"
+  port: 5433
+  username: "postgres"
+  name: "medods"
+  password:
+secret: "secret_key"

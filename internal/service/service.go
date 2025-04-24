@@ -15,20 +15,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("super-secret-key")
+//var jwtSecret = []byte("secret_key")
 
 type Service struct {
-	storage Storage
+	storage   Storage
+	jwtSecret []byte
 }
 
-func New(st Storage) *Service {
+func New(st Storage, jwtSecret []byte) *Service {
 	return &Service{
-		storage: st,
+		storage:   st,
+		jwtSecret: jwtSecret,
 	}
 }
 
 func (s *Service) CreateToken(ctx context.Context, userID, ip string) (string, string, error) {
-	accessToken, jti, err := generateAccessToken(userID, ip)
+	accessToken, jti, err := s.generateAccessToken(userID, ip)
 	if err != nil {
 		return "", "", err
 	}
@@ -52,7 +54,7 @@ func (s *Service) CreateToken(ctx context.Context, userID, ip string) (string, s
 	return accessToken, encodedRefresh, nil
 }
 
-func generateAccessToken(userID, ip string) (string, string, error) {
+func (s *Service) generateAccessToken(userID, ip string) (string, string, error) {
 	jti := generateRandomString(16)
 	claims := model.Claims{
 		UserID: userID,
@@ -64,7 +66,7 @@ func generateAccessToken(userID, ip string) (string, string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	tokenString, err := token.SignedString(jwtSecret)
+	tokenString, err := token.SignedString(s.jwtSecret)
 	return tokenString, jti, err
 }
 
@@ -104,11 +106,11 @@ func (s *Service) RefreshToken(ctx context.Context, accessToken, refreshToken, c
 		go sendWarningEmailMock(userID, currentIP, refreshFromDB.IP)
 	}
 
-	if err := s.storage.MarkTokenUsed(ctx, refreshFromDB.ID); err != nil {
+	if err = s.storage.MarkTokenUsed(ctx, refreshFromDB.ID); err != nil {
 		return "", "", fmt.Errorf("could not mark token as used: %w", err)
 	}
 
-	newAccessToken, newJTI, err := generateAccessToken(userID, currentIP)
+	newAccessToken, newJTI, err := s.generateAccessToken(userID, currentIP)
 	if err != nil {
 		return "", "", fmt.Errorf("failed to generate new access token: %w", err)
 	}
@@ -130,7 +132,7 @@ func (s *Service) RefreshToken(ctx context.Context, accessToken, refreshToken, c
 		Used:        false,
 	}
 
-	if err := s.storage.SaveToken(ctx, newRefresh); err != nil {
+	if err = s.storage.SaveToken(ctx, newRefresh); err != nil {
 		return "", "", fmt.Errorf("failed to save new refresh token: %w", err)
 	}
 
@@ -138,20 +140,18 @@ func (s *Service) RefreshToken(ctx context.Context, accessToken, refreshToken, c
 }
 
 func ParseJWT(tokenStr string) (*model.Claims, error) {
-
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenStr, &model.Claims{})
 	if err != nil {
-		return nil, errors.New("не удалось распарсить токен")
+		return nil, errors.New("failed to parse token")
 	}
 	claims, ok := token.Claims.(*model.Claims)
 	if !ok {
-		return nil, errors.New("невалидные claims в токене")
+		return nil, errors.New("invalid claims in token")
 	}
 	return claims, nil
 }
 
 func sendWarningEmailMock(userID, oldIP, newIP string) error {
-
 	message := fmt.Sprintf("Warning: IP address for user %s has changed!\nOld IP: %s\nNew IP: %s", userID, oldIP, newIP)
 
 	log.Printf("Email Sent: %s", message)
