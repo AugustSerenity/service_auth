@@ -30,7 +30,7 @@ make run
 curl -X POST "http://localhost:8080/auth-token?id=123e4567-e89b-12d3-a456-426614174000"
 ```
 
-##### Структура запроса в JSON
+##### JSON
 
 ```json
 {
@@ -54,7 +54,7 @@ curl -X POST http://localhost:8080/auth-refresh \
     "refresh_token": "MGEyODk0OGM3ZWYwZGYwOWJmNWM0OTRmNzUxMTJiOWE="
 }'
 ```
-
+##### JSON
 ```json
 {
   "method": "POST",
@@ -67,4 +67,4 @@ curl -X POST http://localhost:8080/auth-refresh \
     "refresh_token": "MGEyODk0OGM3ZWYwZGYwOWJmNWM0OTRmNzUxMTJiOWE="
   }
 }
-
+```
