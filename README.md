@@ -43,6 +43,7 @@ curl -X POST "http://localhost:8080/auth-token?id=123e4567-e89b-12d3-a456-426614
     "Content-Type": "application/json"
   }
 }
+```
 
 ### Тестовые данные для Refresh операции Access, Refresh токенов
 ```sh
