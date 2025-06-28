@@ -1,7 +1,7 @@
 # service_auth
 service_auth
 
-# Тестовое задание для отбора BackDev 
+# Сервис аутентификации 
 ## auth_service
 
 ## Описание
